@@ -11,12 +11,36 @@
 let defaultTitle = document.title,
     initialStatus = null,
     currentAction = null,
-    currentSkill = null;
+    currentSkill = null,
+    chatWindow = null;
 
 (function() {
     'use strict';
     setInterval(checkStatus, 1000);
+    chatWindow = setInterval(checkChat, 1000);
 })();
+
+function checkChat() {
+
+   let chat = document.querySelectorAll('.chat-area.active-chat-container ul');
+
+    if(!chat) return;
+
+    let children = chat[0].children;
+
+    for (let i = 0; i < children.length; i++) {
+        if(children[i].getAttribute('data-tmp-bound') === "true") continue;
+        console.log(typeof children[i].getAttribute('data-tmp-bound'), children[i].getAttribute('data-tmp-bound'));
+        children[i].setAttribute('data-tmp-bound', true);
+        children[i].addEventListener('click', function() {
+            let name = this.getElementsByTagName('b')[0].innerText.split('[')[0],
+                chatBox = document.querySelector('.chat-container input');
+            chatBox.value = '/w ' + name + ' ';
+            chatBox.focus();
+        });
+    }
+
+}
 
 function updateTitle(title) {
 
