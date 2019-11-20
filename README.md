@@ -16,6 +16,7 @@ Given the freshness of IdleScape there are a few utilities which would be nice t
 - Title bar now tells you how many fish you have left to cook
 - Title bar shows how much food you have in your inventory when in combat - **you must have the inventory tab open for this to work on the combat screen**
 - Click users name in the chat to automatically whisper to them
+- Time to level on skills except combat and crafting
 
 ## Requests
 - Feel free to open a new issue if you are wanting a specific utility
