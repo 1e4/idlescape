@@ -13,6 +13,7 @@ Given the freshness of IdleScape there are a few utilities which would be nice t
 ## Feature List
 - Update title bar on browsers to let you know what action you are doing, or to let you know if you are idling
 - Title bar now tells you how many bars you have left to smith based on Heat and Bars
+- Title bar now tells you how many fish you have left to cook
 
 ## Requests
 - Feel free to open a new issue if you are wanting a specific utility
