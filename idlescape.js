@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Title Bar Update
 // @namespace    http://github.com/1e4/idlescape
-// @version      0.2
+// @version      0.1
 // @description  Updates title bar with your current status
 // @author       Ian
 // @match        http*://idlescape.com/game
@@ -12,13 +12,38 @@ let defaultTitle = document.title,
     initialStatus = null,
     currentAction = null,
     currentSkill = null,
-    chatWindow = null;
+    chatWindow = null,
+    ttlElement,
+    ttlContainer,
+    ttlInterval;
 
 (function() {
     'use strict';
+
+    ttlInterval = setInterval(findTTLContainer, 1000);
+
     setInterval(checkStatus, 1000);
     chatWindow = setInterval(checkChat, 1000);
 })();
+
+function findTTLContainer() {
+
+    let container = document.querySelectorAll('.navbar3 .status-action');
+    if(!container) {
+        return;
+    } else {
+        ttlContainer = container[0];
+
+        ttlElement = document.createElement('div');
+        ttlElement.style.textAlign = 'center';
+        ttlElement.innerText = 'TTL';
+
+        ttlContainer.append(ttlElement);
+
+
+        clearInterval(ttlInterval);
+    }
+}
 
 function checkChat() {
 
@@ -56,13 +81,19 @@ function checkStatus() {
     // First we split as the first item is the skill
     let tempStatus = initialStatus.split(' ');
 
+    if(tempStatus[1] === 'fishing') {
+        currentSkill = 'fishing';
+        currentAction = tempStatus.join(' ');
+    } else {
 
-    currentSkill = tempStatus[0];
-    // The rest is the action
-    tempStatus = tempStatus.slice(1);
+        currentSkill = tempStatus[0];
+        // The rest is the action
+        tempStatus = tempStatus.slice(1);
 
-    currentAction = tempStatus.join(' ');
+        currentAction = tempStatus.join(' ');
+    }
 
+    updateTTL();
 
     updateTitleBar();
 }
@@ -107,7 +138,110 @@ function getAction() {
 }
 
 function getBurnLeft() {
-    return document.getElementById('heat').innerText;
+    return parseInt(document.getElementById('heat').innerText);
+}
+function fancyTimeFormat(time)
+{
+    // Hours, minutes and seconds
+    var hrs = ~~(time / 3600);
+    var mins = ~~((time % 3600) / 60);
+    var secs = ~~time % 60;
+
+    // Output like "1:01" or "4:03:59" or "123:03:59"
+    var ret = "";
+
+    if (hrs > 0) {
+        ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
+    }
+
+    ret += "" + mins + ":" + (secs < 10 ? "0" : "");
+    ret += "" + secs;
+    return ret;
+}
+
+function getExperienceLeftForCurrentAction() {
+    let header,
+        skillLowerCase = getSkill().toLowerCase();
+
+    if(skillLowerCase === 'idling' || skillLowerCase === 'fighting') return;
+
+    if(skillLowerCase === 'smelting')
+        skillLowerCase = 'smithing';
+    else if(skillLowerCase === 'chopping')
+        skillLowerCase = 'woodcutting';
+    else if(['net', 'harpoon', 'cage', 'fly'].includes(skillLowerCase))
+        skillLowerCase = 'fishing';
+
+    let xp = document.getElementById(`${skillLowerCase}Header`).getElementsByTagName('span')[2].innerHTML.replace(',', '').replace('Left: ', '') || 0;
+
+    return parseInt(xp);
+}
+
+function updateTTL() {
+    let xpLeft = getExperienceLeftForCurrentAction(),
+        resourceContainer = getResourceContainer(),
+        timePerItem = getResourceContainerTimeLeft(),
+        xpPerItem = getResourceContainerXp();
+
+    let totalTime = (xpLeft / xpPerItem) * timePerItem;
+
+    totalTime = fancyTimeFormat(Math.floor(totalTime));
+
+    ttlContainer.querySelectorAll('div')[1].innerText = "TTL:" + totalTime;
+}
+
+function getResourceContainer(alt) {
+
+    alt = alt || getCurrentResourceAction();
+
+    if(!alt) return;
+
+    return document.querySelectorAll('.resource-container .resource-container-image[alt="'+alt+'"]')[0].parentElement;
+}
+
+function getResourceContainerButton(alt) {
+    alt = alt || getCurrentResourceAction();
+
+    if(!alt) return;
+
+    return getResourceContainer(alt).querySelectorAll('.resource-container-button .btn')[0];
+}
+
+function getResourceContainerTimeLeft(alt) {
+    alt = alt || getCurrentResourceAction();
+
+    let container;
+
+    if(!alt) return;
+
+    container = getResourceContainer(alt).querySelectorAll('.resource-time');
+
+    if(container.length > 1)
+        return parseFloat(container[1].innerText.replace('s', ''));
+    else
+        return parseFloat(container[0].innerText.replace('s', ''));
+}
+
+function getResourceContainerXp(alt) {
+    alt = alt || getCurrentResourceAction();
+
+    if(!alt) return;
+
+    return parseInt(getResourceContainer(alt).querySelector('.scrolling-text').innerText.replace('xp', ''));
+}
+
+function getCurrentResourceAction() {
+
+    let action = getAction();
+
+    if(getSkill() === 'Cooking')
+    {
+        let s = action.slice(0, -1).toLowerCase();
+
+        action = 'Cooked ' + s;
+    }
+
+    return action;
 }
 
 function getCookingStatus() {
@@ -116,7 +250,7 @@ function getCookingStatus() {
     if(getAction() === 'Shrimps') {
         let amount = getInventoryItem("Raw shrimpinventory"),
             burn = getBurnLeft(),
-            resource = document.querySelectorAll('.resource-container .resource-container-image[alt="cooked shrimp"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
+            resource = getResourceContainerButton("Cooked shrimp");
 
         if(amount < burn){
             cookCount = amount;
@@ -306,5 +440,5 @@ function getCombatStatus() {
 }
 
 function getInventoryItem(item) {
-    return document.querySelectorAll('[data-for="'+item+'"]')[0].innerText || 0;
+    return parseInt(document.querySelectorAll('[data-for="'+item+'"]')[0].innerText) || 0;
 }
