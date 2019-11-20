@@ -30,7 +30,6 @@ function checkChat() {
 
     for (let i = 0; i < children.length; i++) {
         if(children[i].getAttribute('data-tmp-bound') === "true") continue;
-        console.log(typeof children[i].getAttribute('data-tmp-bound'), children[i].getAttribute('data-tmp-bound'));
         children[i].setAttribute('data-tmp-bound', true);
         children[i].addEventListener('click', function() {
             let name = this.getElementsByTagName('b')[0].innerText.split('[')[0],
