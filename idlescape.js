@@ -169,6 +169,8 @@ function getSmithingStatus() {
         let tinAmount = getInventoryItem("Tin oreinventory"),
             copperAmount = getInventoryItem("Copper oreinventory");
 
+        console.log(tinAmount, copperAmount);
+
         // If resources are less than burn show resource count else show burn
         if(tinAmount > getBurnLeft() && copperAmount > getBurnLeft()) {
             if(tinAmount > copperAmount)
@@ -194,7 +196,7 @@ function getSmithingStatus() {
         }
 
     } else if(getAction() === 'Gold bar') {
-        let amount = getInventoryItem("Iron oreinventory"),
+        let amount = getInventoryItem("Gold oreinventory"),
             bars = Math.floor(amount / 10),
             burn = Math.floor(getBurnLeft() / 20);
 
