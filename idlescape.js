@@ -169,8 +169,6 @@ function getSmithingStatus() {
         let tinAmount = getInventoryItem("Tin oreinventory"),
             copperAmount = getInventoryItem("Copper oreinventory");
 
-        console.log(tinAmount, copperAmount);
-
         // If resources are less than burn show resource count else show burn
         if(tinAmount > getBurnLeft() && copperAmount > getBurnLeft()) {
             if(tinAmount > copperAmount)
