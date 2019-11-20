@@ -10,7 +10,6 @@
 
 let defaultTitle = document.title,
     initialStatus = null,
-    currentStatus = null,
     currentAction = null,
     currentSkill = null;
 
@@ -41,13 +40,18 @@ function checkStatus() {
 
     currentAction = tempStatus.join(' ');
 
+
     updateTitleBar();
 }
 
 function updateTitleBar() {
     let title;
 
-    title = getStatus() + ' ' + getAction();
+    if(getAction() === 'Idling') {
+        title = 'Idle';
+    } else {
+        title = getStatus() + ' ' + getAction();
+    }
 
     updateTitle(title);
 }
@@ -57,7 +61,6 @@ function getStatus() {
     let status,
         skill = getSkill();
 
-
     switch(skill) {
         case 'Smelting':
             return getSmithingStatus();
@@ -66,10 +69,10 @@ function getStatus() {
         case 'Fighting':
             return getCombatStatus();
         default:
-            return status;
+            return skill;
     }
 
-    return status;
+    return skill;
 }
 
 function getSkill() {
