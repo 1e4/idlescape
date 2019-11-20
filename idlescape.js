@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Title Bar Update
 // @namespace    http://github.com/1e4/idlescape
-// @version      0.3
+// @version      0.4
 // @description  Updates title bar with your current status
 // @author       Ian
 // @match        http*://idlescape.com/game
@@ -345,7 +345,7 @@ function getSmithingStatus() {
             resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Bronze bar"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
         // If resources are less than burn show resource count else show burn
-        if(tinAmount > getBurnLeft() && copperAmount > getBurnLeft()) {
+        if(tinAmount < getBurnLeft() || copperAmount < getBurnLeft()) {
             if(tinAmount > copperAmount)
             {
                 barCount = copperAmount;
