@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Title Bar Update
 // @namespace    http://github.com/1e4/idlescape
-// @version      0.1
+// @version      0.3
 // @description  Updates title bar with your current status
 // @author       Ian
 // @match        http*://idlescape.com/game
