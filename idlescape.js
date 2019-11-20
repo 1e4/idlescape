@@ -61,6 +61,8 @@ function getStatus() {
     switch(skill) {
         case 'Smelting':
             return getSmithingStatus();
+        case 'Cooking':
+            return getCookingStatus();
         case 'Mining':
         case 'Chopping':
         default:
@@ -82,6 +84,83 @@ function getBurnLeft() {
     return document.getElementById('heat').innerText;
 }
 
+function getCookingStatus() {
+    let cookCount = 0;
+
+    if(getAction() === 'Shrimps') {
+        let amount = getInventoryItem("Raw shrimpinventory"),
+            burn = getBurnLeft();
+
+        if(amount < burn){
+            cookCount = amount;
+        } else {
+            cookCount = burn;
+        }
+    } else if(getAction() === 'Anchovys') {
+        let amount = getInventoryItem("Raw anchovyinventory"),
+            burn = Math.floor(getBurnLeft() / 5);
+
+        if(amount < burn) {
+            cookCount = amount;
+        } else {
+            cookCount = burn;
+        }
+    } else if(getAction() === 'Trouts') {
+        
+        let amount = getInventoryItem("Raw troutinventory"),
+            burn = Math.floor(getBurnLeft() / 15);
+
+        if(amount < burn) {
+            cookCount = amount;
+        } else {
+            cookCount = burn;
+        }
+    } else if(getAction() === 'Salmons') {
+        
+        let amount = getInventoryItem("Raw salmoninventory"),
+            burn = Math.floor(getBurnLeft() / 25);
+
+        if(amount < burn) {
+            cookCount = amount;
+        } else {
+            cookCount = burn;
+        }
+    } else if(getAction() === 'Lobsters') {
+        
+        let amount = getInventoryItem("Raw lobsterinventory"),
+            burn = Math.floor(getBurnLeft() / 40);
+
+        if(amount < burn) {
+            cookCount = amount;
+        } else {
+            cookCount = burn;
+        }
+    } else if(getAction() === 'Tunas') {
+        
+        let amount = getInventoryItem("Raw tunainventory"),
+            burn = Math.floor(getBurnLeft() / 70);
+
+        if(amount < burn) {
+            cookCount = amount;
+        } else {
+            cookCount = burn;
+        }
+    } else if(getAction() === 'Sharks') {
+        
+        let amount = getInventoryItem("Raw sharkinventory"),
+            burn = Math.floor(getBurnLeft() / 150);
+
+        if(amount < burn) {
+            cookCount = amount;
+        } else {
+            cookCount = burn;
+        }
+    }
+
+    return 'Fish: ' + cookCount;
+
+}
+
 function getSmithingStatus() {
 
     let barCount = 0;
@@ -91,7 +170,7 @@ function getSmithingStatus() {
             copperAmount = getInventoryItem("Copper oreinventory");
 
         // If resources are less than burn show resource count else show burn
-        if(tinAmount > getBurnLeft() && copperAmount > getBurnLeft()) {
+        if(tinAmount < getBurnLeft() || copperAmount < getBurnLeft()) {
             if(tinAmount > copperAmount)
             {
                 barCount = tinAmount;
@@ -106,8 +185,6 @@ function getSmithingStatus() {
         let amount = getInventoryItem("Iron oreinventory"),
             bars = Math.floor(amount / 3),
             burn = Math.floor(getBurnLeft() / 5);
-
-        console.log(bars, burn);
 
         if(bars < burn)
         {
