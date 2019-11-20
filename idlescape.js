@@ -63,10 +63,10 @@ function getStatus() {
             return getSmithingStatus();
         case 'Cooking':
             return getCookingStatus();
-        case 'Mining':
-        case 'Chopping':
+        case 'Fighting':
+            return getCombatStatus();
         default:
-            return skill;
+            return status;
     }
 
     return status;
@@ -106,7 +106,7 @@ function getCookingStatus() {
             cookCount = burn;
         }
     } else if(getAction() === 'Trouts') {
-        
+
         let amount = getInventoryItem("Raw troutinventory"),
             burn = Math.floor(getBurnLeft() / 15);
 
@@ -116,7 +116,7 @@ function getCookingStatus() {
             cookCount = burn;
         }
     } else if(getAction() === 'Salmons') {
-        
+
         let amount = getInventoryItem("Raw salmoninventory"),
             burn = Math.floor(getBurnLeft() / 25);
 
@@ -126,7 +126,7 @@ function getCookingStatus() {
             cookCount = burn;
         }
     } else if(getAction() === 'Lobsters') {
-        
+
         let amount = getInventoryItem("Raw lobsterinventory"),
             burn = Math.floor(getBurnLeft() / 40);
 
@@ -136,7 +136,7 @@ function getCookingStatus() {
             cookCount = burn;
         }
     } else if(getAction() === 'Tunas') {
-        
+
         let amount = getInventoryItem("Raw tunainventory"),
             burn = Math.floor(getBurnLeft() / 70);
 
@@ -146,7 +146,7 @@ function getCookingStatus() {
             cookCount = burn;
         }
     } else if(getAction() === 'Sharks') {
-        
+
         let amount = getInventoryItem("Raw sharkinventory"),
             burn = Math.floor(getBurnLeft() / 150);
 
@@ -240,6 +240,12 @@ function getSmithingStatus() {
     }
 
     return 'Bars: ' + barCount;
+}
+
+function getCombatStatus() {
+    let inventoryCount = document.querySelectorAll('.combat-gear-inventory .cookedFish').length;
+
+    return 'Food: ' + inventoryCount;
 }
 
 function getInventoryItem(item) {
