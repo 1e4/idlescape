@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Title Bar Update
+// @name         Enhancement Suite
 // @namespace    http://github.com/1e4/idlescape
-// @version      0.4
-// @description  Updates title bar with your current status
+// @version      0.4.1
+// @description  Enhancement suite for Idlescape
 // @author       Ian
 // @match        http*://idlescape.com/game
 // @grant        none
@@ -36,7 +36,7 @@ function findTTLContainer() {
 
         ttlElement = document.createElement('div');
         ttlElement.style.textAlign = 'center';
-        ttlElement.innerText = 'TTL';
+        ttlElement.innerText = 'Next Level In: ';
 
         ttlContainer.append(ttlElement);
 
@@ -187,7 +187,7 @@ function updateTTL() {
 
     totalTime = fancyTimeFormat(Math.floor(totalTime));
 
-    ttlContainer.querySelectorAll('div')[1].innerText = "TTL:" + totalTime;
+    ttlContainer.querySelectorAll('div')[1].innerText = "Next Level In: " + totalTime;
 }
 
 function getResourceContainer(alt) {
