@@ -4,7 +4,7 @@
 // @version      0.1
 // @description  Updates title bar with your current status
 // @author       Ian
-// @match        https://idlescape.com/game
+// @match        http*://idlescape.com/game
 // @grant        none
 // ==/UserScript==
 
