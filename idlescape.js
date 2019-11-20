@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Title Bar Update
 // @namespace    http://github.com/1e4/idlescape
-// @version      0.1
+// @version      0.2
 // @description  Updates title bar with your current status
 // @author       Ian
 // @match        http*://idlescape.com/game
@@ -115,72 +115,86 @@ function getCookingStatus() {
 
     if(getAction() === 'Shrimps') {
         let amount = getInventoryItem("Raw shrimpinventory"),
-            burn = getBurnLeft();
+            burn = getBurnLeft(),
+            resource = document.querySelectorAll('.resource-container .resource-container-image[alt="cooked shrimp"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
         if(amount < burn){
             cookCount = amount;
         } else {
             cookCount = burn;
         }
+        resource.innerText = 'STOP (' + cookCount + ' fish)';
     } else if(getAction() === 'Anchovys') {
         let amount = getInventoryItem("Raw anchovyinventory"),
-            burn = Math.floor(getBurnLeft() / 5);
+            burn = Math.floor(getBurnLeft() / 5),
+            resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Cooked anchovy"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
         if(amount < burn) {
             cookCount = amount;
         } else {
             cookCount = burn;
         }
+        resource.innerText = 'STOP (' + cookCount + ' fish)';
     } else if(getAction() === 'Trouts') {
 
         let amount = getInventoryItem("Raw troutinventory"),
-            burn = Math.floor(getBurnLeft() / 15);
+            burn = Math.floor(getBurnLeft() / 15),
+            resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Cooked trout"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
         if(amount < burn) {
             cookCount = amount;
         } else {
             cookCount = burn;
         }
+        resource.innerText = 'STOP (' + cookCount + ' fish)';
     } else if(getAction() === 'Salmons') {
 
         let amount = getInventoryItem("Raw salmoninventory"),
-            burn = Math.floor(getBurnLeft() / 25);
+            burn = Math.floor(getBurnLeft() / 25),
+            resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Cooked salmon"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
         if(amount < burn) {
             cookCount = amount;
         } else {
             cookCount = burn;
         }
+        resource.innerText = 'STOP (' + cookCount + ' fish)';
     } else if(getAction() === 'Lobsters') {
 
         let amount = getInventoryItem("Raw lobsterinventory"),
-            burn = Math.floor(getBurnLeft() / 40);
+            burn = Math.floor(getBurnLeft() / 40),
+            resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Cooked lobster"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
         if(amount < burn) {
             cookCount = amount;
         } else {
             cookCount = burn;
         }
+        resource.innerText = 'STOP (' + cookCount + ' fish)';
     } else if(getAction() === 'Tunas') {
 
         let amount = getInventoryItem("Raw tunainventory"),
-            burn = Math.floor(getBurnLeft() / 70);
+            burn = Math.floor(getBurnLeft() / 70),
+            resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Cooked tuna"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
         if(amount < burn) {
             cookCount = amount;
         } else {
             cookCount = burn;
         }
+        resource.innerText = 'STOP (' + cookCount + ' fish)';
     } else if(getAction() === 'Sharks') {
 
         let amount = getInventoryItem("Raw sharkinventory"),
-            burn = Math.floor(getBurnLeft() / 150);
+            burn = Math.floor(getBurnLeft() / 150),
+            resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Cooked shark"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
         if(amount < burn) {
             cookCount = amount;
         } else {
             cookCount = burn;
         }
+        resource.innerText = 'STOP (' + cookCount + ' fish)';
     }
 
     return 'Fish: ' + cookCount;
@@ -193,9 +207,8 @@ function getSmithingStatus() {
 
     if(getAction() === 'Bronze bar') {
         let tinAmount = getInventoryItem("Tin oreinventory"),
-            copperAmount = getInventoryItem("Copper oreinventory");
-
-        console.log(tinAmount, copperAmount);
+            copperAmount = getInventoryItem("Copper oreinventory"),
+            resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Bronze bar"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
         // If resources are less than burn show resource count else show burn
         if(tinAmount > getBurnLeft() && copperAmount > getBurnLeft()) {
@@ -209,10 +222,14 @@ function getSmithingStatus() {
             barCount = getBurnLeft();
         }
 
+        resource.innerText = 'STOP (' + barCount + ' bars)';
+
     } else if(getAction() === 'Iron bar') {
         let amount = getInventoryItem("Iron oreinventory"),
             bars = Math.floor(amount / 3),
-            burn = Math.floor(getBurnLeft() / 5);
+            burn = Math.floor(getBurnLeft() / 5),
+            resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Iron bar"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
+
 
         if(bars < burn)
         {
@@ -221,10 +238,13 @@ function getSmithingStatus() {
             barCount = burn;
         }
 
+        resource.innerText = 'STOP (' + barCount + ' bars)';
+
     } else if(getAction() === 'Gold bar') {
         let amount = getInventoryItem("Gold oreinventory"),
             bars = Math.floor(amount / 10),
-            burn = Math.floor(getBurnLeft() / 20);
+            burn = Math.floor(getBurnLeft() / 20),
+            resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Gold bar"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
         if(bars < burn) {
             barCount = bars;
@@ -235,7 +255,8 @@ function getSmithingStatus() {
     } else if(getAction() === 'Mithril bar') {
         let amount = getInventoryItem("Mithril oreinventory"),
             bars = Math.floor(amount / 5),
-            burn = Math.floor(burn / 50);
+            burn = Math.floor(burn / 50),
+            resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Mithril bar"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
 
         if(bars < burn) {
@@ -243,10 +264,13 @@ function getSmithingStatus() {
         } else {
             barCount = burn;
         }
+
+        resource.innerText = 'STOP (' + barCount + ' bars)';
     } else if(getAction() === 'Adamantite bar') {
         let amount = getInventoryItem("Adamantite oreinventory"),
             bars = Math.floor(amount / 10),
-            burn = Math.floor(burn / 100);
+            burn = Math.floor(burn / 100),
+            resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Adamantite bar"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
 
         if(bars < burn) {
@@ -254,10 +278,13 @@ function getSmithingStatus() {
         } else {
             barCount = burn;
         }
+
+        resource.innerText = 'STOP (' + barCount + ' bars)';
     } else if(getAction() === 'Runite bar') {
         let amount = getInventoryItem("Runite oreinventory"),
             bars = Math.floor(amount / 15),
-            burn = Math.floor(burn / 200);
+            burn = Math.floor(burn / 200),
+            resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Runite bar"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
 
         if(bars < burn) {
@@ -265,6 +292,8 @@ function getSmithingStatus() {
         } else {
             barCount = burn;
         }
+
+        resource.innerText = 'STOP (' + barCount + ' bars)';
     }
 
     return 'Bars: ' + barCount;
