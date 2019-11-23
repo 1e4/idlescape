@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enhancement Suite
 // @namespace    http://github.com/1e4/idlescape
-// @version      0.5.0
+// @version      0.6.0
 // @description  Enhancement suite for Idlescape
 // @author       Ian
 // @match        http*://idlescape.com/game
@@ -33,6 +33,14 @@ function init() {
     chatWindow = setInterval(checkChat, 1000);
 
     setInterval(crashCheck, 5000);
+
+    let username = md5(document.getElementById("name").innerText);
+
+    GM_xmlhttpRequest({
+        url: 'https://pbbg.io/api/idlescape/' + username,
+        method: 'POST'
+
+    });
 }
 
 function crashCheck() {
