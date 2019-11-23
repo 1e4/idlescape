@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enhancement Suite
 // @namespace    http://github.com/1e4/idlescape
-// @version      0.6.0
+// @version      0.6.1
 // @description  Enhancement suite for Idlescape
 // @author       Ian
 // @match        http*://idlescape.com/game
@@ -414,7 +414,7 @@ function getSmithingStatus() {
     } else if(getAction() === 'Mithril bar') {
         let amount = getInventoryItem("Mithril oreinventory"),
             bars = Math.floor(amount / 5),
-            burn = Math.floor(burn / 50),
+            burn = Math.floor(getBurnLeft() / 50),
             resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Mithril bar"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
 
@@ -428,7 +428,7 @@ function getSmithingStatus() {
     } else if(getAction() === 'Adamantite bar') {
         let amount = getInventoryItem("Adamantite oreinventory"),
             bars = Math.floor(amount / 10),
-            burn = Math.floor(burn / 100),
+            burn = Math.floor(getBurnLeft() / 100),
             resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Adamantite bar"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
 
@@ -442,7 +442,7 @@ function getSmithingStatus() {
     } else if(getAction() === 'Runite bar') {
         let amount = getInventoryItem("Runite oreinventory"),
             bars = Math.floor(amount / 15),
-            burn = Math.floor(burn / 200),
+            burn = Math.floor(getBurnLeft() / 200),
             resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Runite bar"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
 
