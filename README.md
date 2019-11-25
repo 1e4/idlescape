@@ -18,6 +18,7 @@ Given the freshness of IdleScape there are a few utilities which would be nice t
 - Click users name in the chat to automatically whisper to them
 - Time to level on skills except combat and crafting
 - Crash checker
+- Addon for crafting to allow seeing how many items you can craft
 
 ## Requests
 - Feel free to open a new issue if you are wanting a specific utility
