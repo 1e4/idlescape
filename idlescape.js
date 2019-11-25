@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enhancement Suite
 // @namespace    http://github.com/1e4/idlescape
-// @version      0.6.1
+// @version      0.7.0
 // @description  Enhancement suite for Idlescape
 // @author       Ian
 // @match        http*://idlescape.com/game
@@ -18,7 +18,8 @@ let defaultTitle = document.title,
     chatWindow = null,
     ttlElement,
     ttlContainer,
-    ttlInterval;
+    ttlInterval,
+    craftingTableSetup = false;
 
 (function() {
     'use strict';
@@ -41,6 +42,71 @@ function init() {
         method: 'POST'
 
     });
+
+    setInterval(setupCraftingPage, 1000, this);
+}
+
+function setupCraftingPage(self) {
+    let table = document.querySelector('.crafting-table.crafting-table-mod');
+
+    if(craftingTableSetup === true && !table)
+        craftingTableSetup = false;
+
+    if(!table)
+        return;
+
+
+    if(craftingTableSetup === true)
+        return;
+
+    let headerElement = document.createElement('th');
+    headerElement.innerText = 'Craftable';
+
+    table.children[0].children[0].append(headerElement);
+
+    for(let i = 0;i<table.children[1].children.length;i++)
+    {
+        let item = table.children[1].children[i],
+            cell = item.querySelector('td:nth-of-type(4)'),
+            amountAbleToMake = null;
+
+        for(let a = 0;a<cell.children.length;a++)
+        {
+            let p = cell.children[a];
+
+            let explode = p.innerText.split(':'),
+                itemName = explode[0],
+                amountOfItems = parseInt(explode[1]);
+
+
+
+            // Knarly replacement for inventory hack
+            itemName = itemName.replace('log', 'tree')
+                .replace('Branch', 'Bush')
+                .replace('Log', 'Tree');
+
+            let currentAmountIHave = getInventoryItem(itemName + 'inventory'),
+                canMake = 0;
+
+            canMake = Math.floor(currentAmountIHave / amountOfItems);
+
+            if(canMake < amountAbleToMake || amountAbleToMake === null)
+                amountAbleToMake = canMake;
+
+
+            console.log({itemName, amountOfItems, canMake, currentAmountIHave, amountAbleToMake});
+        }
+
+        let itemEle = document.createElement('td');
+
+        itemEle.innerText = amountAbleToMake;
+        cell.parentElement.append(itemEle);
+
+
+    }
+    console.log('setup crafting table');
+
+    craftingTableSetup = true;
 }
 
 function crashCheck() {
@@ -164,7 +230,13 @@ function getAction() {
 }
 
 function getBurnLeft() {
-    return parseInt(document.getElementById('heat').innerText);
+    let h = document.getElementById('heat').innerText;
+
+    if(h.toLowerCase().includes('k'))
+       h = parseInt(h) * 1000;
+
+
+    return parseInt(h);
 }
 function fancyTimeFormat(time)
 {
@@ -465,8 +537,18 @@ function getCombatStatus() {
 }
 
 function getInventoryItem(item) {
-    let count = document.querySelectorAll('[data-for="'+item+'"]')[0].innerText;
-    if(count.includes('k'))
-       count = parseInt(count) * 1000;
-    return count || 0;
+    let count = document.querySelectorAll('[data-for="'+item+'"]')[0];
+
+    if(!count)
+    {
+        console.error('Tried to get invalid item', item)
+
+        return 0;
+    }
+
+    if(count.innerText.includes('k'))
+       count.innerText = parseInt(count) * 1000;
+
+    return parseInt(count.innerText) || 0;
 }
+<div class="item log" data-tip="true" data-for="Bushinventory" currentitem="false"><img src="/images/woodcutting/branch.svg" alt=""><div class="centered">1187</div><div class="__react_component_tooltip place-top type-dark " id="Bushinventory" data-id="tooltip" style="left: 1451px; top: 339px;"><span>Branch</span><br><span>1,187</span><br><br><span>Value: 1 <img src="/images/gold_coins.svg" alt="" class="icon16"></span><br><span>Heat: 1 <img src="/images/heat.svg" alt="" class="icon16"></span></div></div>
