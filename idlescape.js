@@ -361,7 +361,7 @@ function getCookingStatus() {
             burn = Math.floor(getBurnLeft() / 5),
             resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Cooked anchovy"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
-        if(amount < burn) {
+https://github.com/1e4/idlescape/        if(amount < burn) {
             cookCount = amount;
         } else {
             cookCount = burn;
@@ -551,4 +551,3 @@ function getInventoryItem(item) {
 
     return parseInt(count.innerText) || 0;
 }
-<div class="item log" data-tip="true" data-for="Bushinventory" currentitem="false"><img src="/images/woodcutting/branch.svg" alt=""><div class="centered">1187</div><div class="__react_component_tooltip place-top type-dark " id="Bushinventory" data-id="tooltip" style="left: 1451px; top: 339px;"><span>Branch</span><br><span>1,187</span><br><br><span>Value: 1 <img src="/images/gold_coins.svg" alt="" class="icon16"></span><br><span>Heat: 1 <img src="/images/heat.svg" alt="" class="icon16"></span></div></div>
