@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enhancement Suite
 // @namespace    http://github.com/1e4/idlescape
-// @version      0.7.1
+// @version      0.7.2
 // @description  Enhancement suite for Idlescape
 // @author       Ian
 // @match        http*://idlescape.com/game
@@ -360,8 +360,7 @@ function getCookingStatus() {
         let amount = getInventoryItem("Raw anchovyinventory"),
             burn = Math.floor(getBurnLeft() / 5),
             resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Cooked anchovy"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
-
-https://github.com/1e4/idlescape/        if(amount < burn) {
+        if(amount < burn) {
             cookCount = amount;
         } else {
             cookCount = burn;
