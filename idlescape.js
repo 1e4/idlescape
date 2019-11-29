@@ -1,11 +1,13 @@
 // ==UserScript==
 // @name         Enhancement Suite
 // @namespace    http://github.com/1e4/idlescape
-// @version      0.7.2
+// @version      0.8.0
 // @description  Enhancement suite for Idlescape
 // @author       Ian
 // @match        http*://idlescape.com/game
 // @grant        GM_xmlhttpRequest
+// @grant GM_setValue
+// @grant GM_getValue
 // @connect      pbbg.io
 // @connect      127.0.0.1
 // ==/UserScript==
@@ -19,7 +21,10 @@ let defaultTitle = document.title,
     ttlElement,
     ttlContainer,
     ttlInterval,
-    craftingTableSetup = false;
+    craftingTableSetup = false,
+    smithingTableSetup = false,
+    currentTab = null,
+    tabTimer = null;
 
 (function() {
     'use strict';
@@ -44,6 +49,79 @@ function init() {
     });
 
     setInterval(setupCraftingPage, 1000, this);
+    setInterval(setupSmithingPage, 1000, this);
+
+    tabTimer = setInterval(bindTabs, 1000);
+}
+
+function bindTabs() {
+    let tabContainer = document.querySelectorAll('.nav-tab-play-area .nav-tabs-display-container ul')[0],
+        bound = false;
+
+    if(tabContainer.classList.contains('bound') || !tabContainer)
+    {
+        return;
+    }
+
+    currentTab = GM_getValue('current_tab_id');
+    let documentCurrentTab = document.getElementById(currentTab);
+
+    if(documentCurrentTab)
+        documentCurrentTab.click();
+
+    let tabs = tabContainer.querySelectorAll('li');
+
+    for(let i = 0; i < tabs.length;i++) {
+        let tab = tabs[i],
+            tabTarget = tab.attributes['aria-controls'].nodeValue,
+            tabId = tab.id;
+
+        tab.addEventListener('click', () => {
+            GM_setValue('current_tab', tabTarget);
+            GM_setValue('current_tab_id', tabId);
+        });
+
+        clearInterval(tabTimer);
+    }
+
+    tabContainer.classList.add('bound');
+}
+
+function setupSmithingPage(self) {
+    let table = document.querySelector('.play-area.theme-smithing .resource-list');
+
+
+    if(smithingTableSetup === true && !table)
+        smithingTableSetup = false;
+
+    if(!table)
+        return;
+
+    let resources = table.querySelectorAll('.resource-container');
+
+    for(let i = 0; i<resources.length;i++) {
+        let resource = resources[i];
+        let timeElement = resource.querySelector('.resource-time.resource-property');
+        let time = timeElement.querySelector('span').innerText;
+        let perHourElement = resource.querySelector('.per-hour');
+
+        if(!perHourElement)
+        {
+
+            perHourElement = document.createElement('div');
+            perHourElement.classList.add('per-hour');
+
+            timeElement.append(perHourElement);
+        }
+
+        let calc = Math.floor(3600 / time.replace('s', ''));
+
+        perHourElement.innerText = calc + ' p/h';
+
+
+    }
+
+    smithingTableSetup = true;
 }
 
 function setupCraftingPage(self) {
@@ -92,9 +170,6 @@ function setupCraftingPage(self) {
 
             if(canMake < amountAbleToMake || amountAbleToMake === null)
                 amountAbleToMake = canMake;
-
-
-            console.log({itemName, amountOfItems, canMake, currentAmountIHave, amountAbleToMake});
         }
 
         let itemEle = document.createElement('td');
@@ -540,8 +615,6 @@ function getInventoryItem(item) {
 
     if(!count)
     {
-        console.error('Tried to get invalid item', item)
-
         return 0;
     }
 
