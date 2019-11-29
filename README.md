@@ -19,6 +19,14 @@ Given the freshness of IdleScape there are a few utilities which would be nice t
 - Time to level on skills except combat and crafting
 - Crash checker
 - Addon for crafting to allow seeing how many items you can craft
+- ... and more
+
+Update Log
+
+### 0.8
+
+- Smithing now shows bars per hour
+- The game will now remember what tab you were in
 
 ## Requests
 - Feel free to open a new issue if you are wanting a specific utility
