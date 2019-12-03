@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enhancement Suite
 // @namespace    http://github.com/1e4/idlescape
-// @version      0.8.0
+// @version      0.9.0
 // @description  Enhancement suite for Idlescape
 // @author       Ian
 // @match        http*://idlescape.com/game
@@ -23,8 +23,19 @@ let defaultTitle = document.title,
     ttlInterval,
     craftingTableSetup = false,
     smithingTableSetup = false,
+    miningTableSetup = false,
     currentTab = null,
     tabTimer = null;
+
+const miningXpTable = {
+    Copper: 5,
+    Tin: 5,
+    Iron: 50,
+    Gold: 50,
+    Mithril: 100,
+    Adamantite: 150,
+    Runite: 500
+};
 
 (function() {
     'use strict';
@@ -50,6 +61,7 @@ function init() {
 
     setInterval(setupCraftingPage, 1000, this);
     setInterval(setupSmithingPage, 1000, this);
+    setInterval(setupMiningPage, 1000, this);
 
     tabTimer = setInterval(bindTabs, 1000);
 }
@@ -122,6 +134,44 @@ function setupSmithingPage(self) {
     }
 
     smithingTableSetup = true;
+}
+function setupMiningPage(self) {
+    let table = document.querySelector('.play-area.theme-mining .resource-list');
+
+
+    if(miningTableSetup === true && !table)
+        miningTableSetup = false;
+
+    if(!table)
+        return;
+
+    let resources = table.querySelectorAll('.resource-container');
+
+    for(let i = 0; i<resources.length;i++) {
+        let resource = resources[i];
+        let name = resource.querySelector('h5.resource-container-title').innerText.split(' ')[0];
+        let timeElement = resource.querySelector('.resource-time.resource-property');
+        let time = timeElement.querySelector('span').innerText;
+        let perHourElement = resource.querySelector('.per-hour');
+
+        if(!perHourElement)
+        {
+
+            perHourElement = document.createElement('div');
+            perHourElement.classList.add('per-hour');
+
+            timeElement.append(perHourElement);
+        }
+
+        let calc = Math.floor(3600 / time.replace('s', '')),
+            perHourXP = calc * miningXpTable[name];
+
+        perHourElement.innerText = calc + ' p/h';
+
+        perHourElement.innerHTML = perHourElement.innerText + '<br />'+perHourXP+' xp p/h'
+    }
+
+    miningTableSetup = true;
 }
 
 function setupCraftingPage(self) {
