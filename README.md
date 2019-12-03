@@ -28,5 +28,9 @@ Update Log
 - Smithing now shows bars per hour
 - The game will now remember what tab you were in
 
+### 0.9
+
+- Mining now shows ore per hour and xp per hour, in 0.10 I expect to add fishing and cooking into it
+
 ## Requests
 - Feel free to open a new issue if you are wanting a specific utility
