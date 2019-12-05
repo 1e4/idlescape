@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enhancement Suite
 // @namespace    http://github.com/1e4/idlescape
-// @version      0.9.0
+// @version      0.10.0
 // @description  Enhancement suite for Idlescape
 // @author       Ian
 // @match        http*://idlescape.com/game
@@ -25,17 +25,8 @@ let defaultTitle = document.title,
     smithingTableSetup = false,
     miningTableSetup = false,
     currentTab = null,
-    tabTimer = null;
-
-const miningXpTable = {
-    Copper: 5,
-    Tin: 5,
-    Iron: 50,
-    Gold: 50,
-    Mithril: 100,
-    Adamantite: 150,
-    Runite: 500
-};
+    tabTimer = null,
+    pages = {};
 
 (function() {
     'use strict';
@@ -59,11 +50,14 @@ function init() {
 
     });
 
-    setInterval(setupCraftingPage, 1000, this);
-    setInterval(setupSmithingPage, 1000, this);
-    setInterval(setupMiningPage, 1000, this);
+    //pages['crafting'];
+    setInterval(setupCraftingPage, 1000, this)
 
     tabTimer = setInterval(bindTabs, 1000);
+}
+
+function loadPage(tabName) {
+    let page = Page.new(tabName).draw();
 }
 
 function bindTabs() {
@@ -76,21 +70,28 @@ function bindTabs() {
     }
 
     currentTab = GM_getValue('current_tab_id');
+    let currentTabName = GM_getValue('current_tab_name');
     let documentCurrentTab = document.getElementById(currentTab);
 
-    if(documentCurrentTab)
+    if(documentCurrentTab) {
         documentCurrentTab.click();
+        loadPage(currentTabName);
+    }
 
     let tabs = tabContainer.querySelectorAll('li');
 
     for(let i = 0; i < tabs.length;i++) {
         let tab = tabs[i],
             tabTarget = tab.attributes['aria-controls'].nodeValue,
-            tabId = tab.id;
+            tabId = tab.id,
+            tabName = tab.children[1].innerText;
+
 
         tab.addEventListener('click', () => {
             GM_setValue('current_tab', tabTarget);
+            GM_setValue('current_tab_name', tabName);
             GM_setValue('current_tab_id', tabId);
+            loadPage(tabName);
         });
 
         clearInterval(tabTimer);
@@ -99,22 +100,106 @@ function bindTabs() {
     tabContainer.classList.add('bound');
 }
 
-function setupSmithingPage(self) {
-    let table = document.querySelector('.play-area.theme-smithing .resource-list');
+let Page = {
+    init: function() {
+
+        this.resource = null;
+        this.timeElement = null;
+        this.timePerAction = null;
+        this.calc = null;
+        this.resourceList = null;
+        this.setup = false;
+        this.xpTable = null;
+
+        this.setupPage();
+
+        if(this.name === 'Mining')
+        {
+            this.xpTable = {
+                Copper: 5,
+                Tin: 5,
+                Iron: 50,
+                Gold: 50,
+                Mithril: 100,
+                Adamantite: 150,
+                Runite: 500
+            };
+        } else if(this.name === 'Woodcutting') {
+            this.xpTable = {
+                Bush: 1,
+                Tree: 10,
+                Oak: 20,
+                Willow: 50,
+                Maple: 100,
+                Yew: 250
+            };
+        } else if(this.name === 'Smithing') {
+            this.xpTable = {
+                Bronze: 10,
+                Iron: 100,
+                Gold: 100,
+                Mithril: 200,
+                Adamantite: 300,
+                Runite: 1000
+            }
+        } else if(this.name === 'Cooking') {
+            this.xpTable = {
+                "Cooked shrimp": 25,
+                "Cooked anchovy": 50,
+                "Cooked trout": 120,
+                "Cooked salmon": 180,
+                "Cooked lobster": 200,
+                "Cooked tuna": 250,
+                "Cooked shark": 1000
+            }
+        }
+
+        return this;
+
+    },
+
+    new: function(name) {
+        this.name = name || null;
+        this.init();
+        return this;
+    },
+
+    setupPage: function() {
+        let tab = GM_getValue('current_tab');
+        let area = document.getElementById(`${tab}`);
+        this.resourceList = document.querySelector(`#${tab} .play-area .resource-list`);
+    },
+
+    draw: function() {
 
 
-    if(smithingTableSetup === true && !table)
-        smithingTableSetup = false;
 
-    if(!table)
-        return;
+        if(this.setup === true && this.resourceList !== null)
+            this.setup = false;
 
-    let resources = table.querySelectorAll('.resource-container');
+        if(this.resourceList === null)
+            return;
 
-    for(let i = 0; i<resources.length;i++) {
-        let resource = resources[i];
-        let timeElement = resource.querySelector('.resource-time.resource-property');
-        let time = timeElement.querySelector('span').innerText;
+        let resources = this.resourceList.querySelectorAll('.resource-container');
+
+        for(let i = 0; i<resources.length;i++) {
+            let resource = resources[i];
+            this.handleResource(resources[i]);
+        }
+
+        this.setup = true;
+
+        return this;
+    },
+
+    handleResource: function(resource) {
+        resource.name = resource.querySelector('h5.resource-container-title').innerHTML;
+        this.handleTime(resource);
+    },
+
+    handleTime: function(resource) {
+        let timeElement = resource.querySelector('.resource-time.resource-property:last-of-type');
+        let time = timeElement.querySelector('span').innerHTML;
         let perHourElement = resource.querySelector('.per-hour');
 
         if(!perHourElement)
@@ -128,50 +213,24 @@ function setupSmithingPage(self) {
 
         let calc = Math.floor(3600 / time.replace('s', ''));
 
-        perHourElement.innerText = calc + ' p/h';
+        let output = `${calc} p/h`;
 
+        if(this.xpTable !== null) {
+            let resourceName = resource.name;
 
-    }
+            // Edge case for cooking
+            if(resourceName.split(' ')[0] !== 'Cooked')
+                resourceName = resourceName.split(' ')[0];
 
-    smithingTableSetup = true;
-}
-function setupMiningPage(self) {
-    let table = document.querySelector('.play-area.theme-mining .resource-list');
-
-
-    if(miningTableSetup === true && !table)
-        miningTableSetup = false;
-
-    if(!table)
-        return;
-
-    let resources = table.querySelectorAll('.resource-container');
-
-    for(let i = 0; i<resources.length;i++) {
-        let resource = resources[i];
-        let name = resource.querySelector('h5.resource-container-title').innerText.split(' ')[0];
-        let timeElement = resource.querySelector('.resource-time.resource-property');
-        let time = timeElement.querySelector('span').innerText;
-        let perHourElement = resource.querySelector('.per-hour');
-
-        if(!perHourElement)
-        {
-
-            perHourElement = document.createElement('div');
-            perHourElement.classList.add('per-hour');
-
-            timeElement.append(perHourElement);
+            let perHourXP = calc * this.xpTable[resourceName];
+            output = `${output}<br>${perHourXP} xp p/h`;
         }
 
-        let calc = Math.floor(3600 / time.replace('s', '')),
-            perHourXP = calc * miningXpTable[name];
-
-        perHourElement.innerText = calc + ' p/h';
-
-        perHourElement.innerHTML = perHourElement.innerText + '<br />'+perHourXP+' xp p/h'
+        perHourElement.innerHTML = output
+    },
+    getInstance: function() {
+        return this;
     }
-
-    miningTableSetup = true;
 }
 
 function setupCraftingPage(self) {
@@ -229,7 +288,6 @@ function setupCraftingPage(self) {
 
 
     }
-    console.log('setup crafting table');
 
     craftingTableSetup = true;
 }
