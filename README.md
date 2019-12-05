@@ -32,5 +32,14 @@ Update Log
 
 - Mining now shows ore per hour and xp per hour, in 0.10 I expect to add fishing and cooking into it
 
+### 0.10.0
+- Fishing now shows amount per hour and xp per hour
+- Cooking now shows amount per hour and xp per hour
+- Woodcutting now shows amount per hour and xp per hour
+- Optimised how pages are loaded @todo crafting still should be a performance boost along with faster rendering of xp/items per hour
+
+### 0.10.1
+- Fixes an issue with resource-container heights
+
 ## Requests
 - Feel free to open a new issue if you are wanting a specific utility
