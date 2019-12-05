@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enhancement Suite
 // @namespace    http://github.com/1e4/idlescape
-// @version      0.10.0
+// @version      0.10.1
 // @description  Enhancement suite for Idlescape
 // @author       Ian
 // @match        http*://idlescape.com/game
@@ -194,6 +194,7 @@ let Page = {
 
     handleResource: function(resource) {
         resource.name = resource.querySelector('h5.resource-container-title').innerHTML;
+        resource.style.height = 'auto';
         this.handleTime(resource);
     },
 
