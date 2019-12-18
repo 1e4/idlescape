@@ -41,5 +41,8 @@ Update Log
 ### 0.10.1
 - Fixes an issue with resource-container heights
 
+### 0.11.0
+- More accurate counting for inventory items and burn count
+
 ## Requests
 - Feel free to open a new issue if you are wanting a specific utility
