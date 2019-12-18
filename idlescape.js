@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enhancement Suite
 // @namespace    http://github.com/1e4/idlescape
-// @version      0.10.1
+// @version      0.11.0
 // @description  Enhancement suite for Idlescape
 // @author       Ian
 // @match        http*://idlescape.com/game
@@ -414,11 +414,13 @@ function getAction() {
 }
 
 function getBurnLeft() {
-    let h = document.getElementById('heat').innerText;
+    let h = document.getElementById('heat-tooltip').querySelectorAll('span')[0].innerHTML.replace(',', '');
 
+    return parseInt(h);
     if(h.toLowerCase().includes('k'))
        h = parseInt(h) * 1000;
-
+    else if(h.toLowerCase().includes('m'))
+        h = parseInt(h) * 1000000
 
     return parseInt(h);
 }
@@ -604,6 +606,7 @@ function getCookingStatus() {
             burn = Math.floor(getBurnLeft() / 150),
             resource = document.querySelectorAll('.resource-container .resource-container-image[alt="Cooked shark"]')[0].parentElement.querySelectorAll('.resource-container-button .btn')[0];
 
+
         if(amount < burn) {
             cookCount = amount;
         } else {
@@ -727,8 +730,7 @@ function getInventoryItem(item) {
         return 0;
     }
 
-    if(count.innerText.includes('k'))
-       count.innerText = parseInt(count) * 1000;
+    let realAmount = document.getElementById(item).querySelectorAll('span')[1].innerHTML.replace(',', '');
 
-    return parseInt(count.innerText) || 0;
+    return parseInt(realAmount);
 }
