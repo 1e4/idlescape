@@ -44,5 +44,8 @@ Update Log
 ### 0.11.0
 - More accurate counting for inventory items and burn count
 
+### 0.12.0
+- Made counting even more accurate for burn when over a million and when items are over a million
+
 ## Requests
 - Feel free to open a new issue if you are wanting a specific utility
