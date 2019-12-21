@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Enhancement Suite
 // @namespace    http://github.com/1e4/idlescape
-// @version      0.11.0
+// @version      0.12.0
 // @description  Enhancement suite for Idlescape
 // @author       Ian
 // @match        http*://idlescape.com/game
@@ -42,6 +42,8 @@ function init() {
 
     setInterval(crashCheck, 5000);
 
+    // Here we hash the username and post that to the server to get a rough count of users using the script, nothing else is sent or logged
+    // You can see what happens in our website repo https://github.com/pbbg-io/pbbg.io/blob/master/routes/api.php#L20-L26
     let username = md5(document.getElementById("name").innerText);
 
     GM_xmlhttpRequest({
@@ -414,15 +416,11 @@ function getAction() {
 }
 
 function getBurnLeft() {
-    let h = document.getElementById('heat-tooltip').querySelectorAll('span')[0].innerHTML.replace(',', '');
+    let h = document.getElementById('heat-tooltip').querySelectorAll('span')[0].innerHTML,
+        burn = h.match(/\d+/g, '').join('');
 
-    return parseInt(h);
-    if(h.toLowerCase().includes('k'))
-       h = parseInt(h) * 1000;
-    else if(h.toLowerCase().includes('m'))
-        h = parseInt(h) * 1000000
 
-    return parseInt(h);
+    return parseInt(burn);
 }
 function fancyTimeFormat(time)
 {
@@ -730,7 +728,9 @@ function getInventoryItem(item) {
         return 0;
     }
 
-    let realAmount = document.getElementById(item).querySelectorAll('span')[1].innerHTML.replace(',', '');
+    let realAmount = document.getElementById(item).querySelectorAll('span')[1].innerHTML;
+
+    realAmount = realAmount.match(/\d+/g, '').join('');
 
     return parseInt(realAmount);
 }
